@@ -148,7 +148,7 @@ app.listen(8888);
 app.get("/aotd", async function (req, res) {
   const accessToken = req.query["accessToken"];
   const candidateArtistIds = await getCandidateArtistsIds(accessToken);
-const artistId = candidateArtistIds[Math.floor(Math.random() * candidateArtistIds.size)]
+const artistId = candidateArtistIds[Math.floor(Math.random() * candidateArtistIds.length)]
 
   const topAlbums = await getArtistAlbums(accessToken, artistId)
 
