@@ -74,7 +74,7 @@ app.get("/callback", function (req, res) {
       headers: {
         Authorization:
           "Basic " +
-          new Buffer(client_id + ":" + client_secret).toString("base64"),
+          new Buffer.from(client_id + ":" + client_secret).toString("base64"),
       },
       json: true,
     };
@@ -83,17 +83,6 @@ app.get("/callback", function (req, res) {
       if (!error && response.statusCode === 200) {
         var access_token = body.access_token,
           refresh_token = body.refresh_token;
-
-        var options = {
-          url: "https://api.spotify.com/v1/me",
-          headers: { Authorization: "Bearer " + access_token },
-          json: true,
-        };
-
-        // use the access token to access the Spotify Web API
-        request.get(options, function (error, response, body) {
-          console.log(body);
-        });
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
@@ -195,7 +184,7 @@ async function getTopArtists(access_token, time_range) {
     });
     return res.data['items'];
   } catch (error) {
-    console.error(error)
+    console.error(error.response)
   }
 }
 
@@ -209,6 +198,6 @@ async function getArtistAlbums(access_token, artistId) {
     });
     return res.data['items'];
   } catch (error) {
-    console.error(error)
+    console.error(error.response)
   }
 }
