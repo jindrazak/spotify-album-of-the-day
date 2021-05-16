@@ -7,7 +7,9 @@ var axios = require("axios");
 
 var client_id = "22ed2875d3ff4ee2bc8ffae6a4f26475"; // Your client id
 var client_secret = "21c020cdd8cf4665888e513be32ded16"; // Your secret
-var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
+var redirect_uri = "http://localhost:8080/callback"; // Your redirect uri
+//var redirect_uri = "https://spotify-album-of-the-day-6r4ar544wa-lm.a.run.app/callback"; // Your redirect uri
+
 
 var generateRandomString = function (length) {
   var text = "";
@@ -81,15 +83,15 @@ app.get("/callback", function (req, res) {
 
     request.post(authOptions, function (error, response, body) {
       if (!error && response.statusCode === 200) {
-        var access_token = body.access_token,
-          refresh_token = body.refresh_token;
+        var accessToken = body.access_token,
+          refreshToken = body.refresh_token;
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
           "/#" +
             querystring.stringify({
-              access_token: access_token,
-              refresh_token: refresh_token,
+              access_token: accessToken,
+              refresh_token: refreshToken,
             })
         );
       } else {
@@ -106,17 +108,17 @@ app.get("/callback", function (req, res) {
 
 app.get("/refresh_token", function (req, res) {
   // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
+  var refreshToken = req.query.refresh_token;
   var authOptions = {
     url: "https://accounts.spotify.com/api/token",
     headers: {
       Authorization:
         "Basic " +
-        new Buffer(client_id + ":" + client_secret).toString("base64"),
+        new Buffer.from(client_id + ":" + client_secret).toString("base64"),
     },
     form: {
       grant_type: "refresh_token",
-      refresh_token: refresh_token,
+      refresh_token: refreshToken,
     },
     json: true,
   };
@@ -131,8 +133,10 @@ app.get("/refresh_token", function (req, res) {
   });
 });
 
-console.log("Listening on 8888");
-app.listen(8888);
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
 
 app.get("/aotd", async function (req, res) {
   const accessToken = req.query["accessToken"];
@@ -147,11 +151,11 @@ const artistId = candidateArtistIds[Math.floor(Math.random() * candidateArtistId
 });
 
 
-async function getCandidateArtistsIds(access_token) {
+async function getCandidateArtistsIds(accessToken) {
 
-  const longTermArtistsPromise = getTopArtists(access_token, "long_term")
-  const mediumTermArtistsPromise = getTopArtists(access_token, "medium_term")
-  const shortTermArtistsPromise = getTopArtists(access_token, "short_term")
+  const longTermArtistsPromise = getTopArtists(accessToken, "long_term")
+  const mediumTermArtistsPromise = getTopArtists(accessToken, "medium_term")
+  const shortTermArtistsPromise = getTopArtists(accessToken, "short_term")
 
   const resolvedPromises = await Promise.all([longTermArtistsPromise, mediumTermArtistsPromise, shortTermArtistsPromise])
 
@@ -161,10 +165,11 @@ async function getCandidateArtistsIds(access_token) {
 
   const candidates = new Set(longTermArtistIds);
   mediumTermArtistIds.forEach(id => candidates.add(id));
+  shortTermArtistIds.forEach(id => candidates.add(id));
 
-  const candidateIds = differenceSet(candidates, shortTermArtistIds)
+  // const candidateIds = differenceSet(candidates, shortTermArtistIds)
   
-  return Array.from(candidateIds);
+  return Array.from(candidates);
 }
 
 function differenceSet(setA, setB) {
@@ -175,29 +180,29 @@ function differenceSet(setA, setB) {
   return _difference
 }
 
-async function getTopArtists(access_token, time_range) {
+async function getTopArtists(accessToken, time_range) {
   try {
-    const res = await axios.get("https://api.spotify.com/v1/me/top/artists?time_range=" + time_range + "&limit=50", {
-      headers: {
-        Authorization: "Bearer " + access_token,
-      },
-    });
+    const res = await getSpotifyApi("me/top/artists?time_range=" + time_range + "&limit=50", accessToken)
     return res.data['items'];
   } catch (error) {
     console.error(error.response)
   }
 }
 
-async function getArtistAlbums(access_token, artistId) {
+async function getArtistAlbums(accessToken, artistId) {
   try {
     //todo paginate through all the albums
-    const res = await axios.get("https://api.spotify.com/v1/artists/" + artistId + "/albums?include_groups=album&limit=50", {
-      headers: {
-        Authorization: "Bearer " + access_token,
-      },
-    });
+    const res = await getSpotifyApi("artists/" + artistId + "/albums?include_groups=album&limit=50", accessToken)
     return res.data['items'];
   } catch (error) {
     console.error(error.response)
   }
+}
+
+function getSpotifyApi(url, accessToken){
+  return axios.get("https://api.spotify.com/v1/" + url, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    });
 }

@@ -11,7 +11,7 @@
     }
 
     body {
-      background-color: grey;
+      background-color: rgb(0, 255, 191);
     }
 
     .text-overflow {
@@ -33,7 +33,9 @@
       </div>
       <div id="aotd">
       </div>
-      <button class="btn btn-default" id="trigger-action">Do the shit</button>
+      <div style="margin-top: 20px;">
+      <button class="btn btn-default" id="trigger-action">Roll the dice! 🎲</button>
+      </div>
     </div>
   </div>
 
@@ -43,28 +45,17 @@
         <div class="pull-left">
           <img class="media-object" width="150" src="{{images.0.url}}" />
         </div>
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
-            <dt>Id</dt><dd>{{id}}</dd>
-            <dt>Email</dt><dd>{{email}}</dd>
-            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-            <dt>Country</dt><dd>{{country}}</dd>
-          </dl>
-        </div>
       </div>
     </script>
 
   <script id="aotd-template" type="text/x-handlebars-template">
-      <h2>Album of the day info</h2>
+      <h2>Album of the day</h2>
       <img width="200" src="{{image}}" alt="">
       <p>{{name}}</p>
       <p>{{artist}}</p>
     </script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
   <script>
     (function () {
 
@@ -127,7 +118,7 @@
             aotd.innerHTML = aotdTemplate({
               name: data.name,
               artist: data.artists[0].name,
-              image: data.images[0].url
+              image: data.images[1].url
             });
           });
         }, false);
