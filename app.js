@@ -5,8 +5,8 @@ var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 var axios = require("axios");
 
-var client_id = "22ed2875d3ff4ee2bc8ffae6a4f26475"; // Your client id
-var client_secret = "21c020cdd8cf4665888e513be32ded16"; // Your secret
+var client_id = "your-client-id"; // Your client id
+var client_secret = "your-client-secret"; // Your secret
 var redirect_uri = "http://localhost:8080/callback"; // Your redirect uri
 //var redirect_uri = "https://spotify-album-of-the-day-6r4ar544wa-lm.a.run.app/callback"; // Your redirect uri
 
