@@ -1,9 +1,9 @@
 name: Deploy to Google Cloud Run
 on:
     push:
-        branches: [ cloud-run ]
+        branches: [ gcp-cloud-run ]
     pull_request:
-        branches: [ cloud-run ]
+        branches: [ gcp-cloud-run ]
 jobs:
     deploy:
         runs-on: ubuntu-latest
