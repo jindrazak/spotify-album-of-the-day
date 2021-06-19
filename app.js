@@ -1,29 +1,29 @@
-var express = require("express"); // Express web server framework
-var request = require("request"); // "Request" library
-var cors = require("cors");
-var querystring = require("querystring");
-var cookieParser = require("cookie-parser");
-var axios = require("axios");
+const express = require("express"); // Express web server framework
+const request = require("request"); // "Request" library
+const cors = require("cors");
+const querystring = require("querystring");
+const cookieParser = require("cookie-parser");
+const axios = require("axios");
 
-var client_id = process.env.SPOTIFY_CLIENT_ID;
-var client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-var redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
+const client_id = process.env.SPOTIFY_CLIENT_ID;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
 
-var generateRandomString = function (length) {
-  var text = "";
-  var possible =
+function generateRandomString(length) {
+  let text = "";
+  const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
-};
+}
 
-var stateKey = "spotify_auth_state";
+const stateKey = "spotify_auth_state";
 
-var app = express();
+const app = express();
 
 app
   .use(express.static(__dirname + "/public"))
@@ -31,20 +31,20 @@ app
   .use(cookieParser());
 
 app.get("/login", function (req, res) {
-  var state = generateRandomString(16);
+  const state = generateRandomString(16);
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = "user-read-private user-read-email user-top-read";
+  const scope = "user-read-private user-read-email user-top-read";
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
-      })
+    querystring.stringify({
+      response_type: "code",
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state,
+    })
   );
 });
 
@@ -52,20 +52,20 @@ app.get("/callback", function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 
-  var code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
+  const code = req.query.code || null;
+  const state = req.query.state || null;
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
     res.redirect(
       "/#" +
-        querystring.stringify({
-          error: "state_mismatch",
-        })
+      querystring.stringify({
+        error: "state_mismatch",
+      })
     );
   } else {
     res.clearCookie(stateKey);
-    var authOptions = {
+    const authOptions = {
       url: "https://accounts.spotify.com/api/token",
       form: {
         code: code,
@@ -82,23 +82,23 @@ app.get("/callback", function (req, res) {
 
     request.post(authOptions, function (error, response, body) {
       if (!error && response.statusCode === 200) {
-        var accessToken = body.access_token,
+        const accessToken = body.access_token,
           refreshToken = body.refresh_token;
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
           "/#" +
-            querystring.stringify({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            })
+          querystring.stringify({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          })
         );
       } else {
         res.redirect(
           "/#" +
-            querystring.stringify({
-              error: "invalid_token",
-            })
+          querystring.stringify({
+            error: "invalid_token",
+          })
         );
       }
     });
@@ -107,8 +107,8 @@ app.get("/callback", function (req, res) {
 
 app.get("/refresh_token", function (req, res) {
   // requesting access token from refresh token
-  var refreshToken = req.query.refresh_token;
-  var authOptions = {
+  const refreshToken = req.query.refresh_token;
+  const authOptions = {
     url: "https://accounts.spotify.com/api/token",
     headers: {
       Authorization:
@@ -124,7 +124,7 @@ app.get("/refresh_token", function (req, res) {
 
   request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      var access_token = body.access_token;
+      const access_token = body.access_token;
       res.send({
         access_token: access_token,
       });
@@ -140,7 +140,7 @@ app.listen(port, () => {
 app.get("/aotd", async function (req, res) {
   const accessToken = req.query["accessToken"];
   const candidateArtistIds = await getCandidateArtistsIds(accessToken);
-const artistId = candidateArtistIds[Math.floor(Math.random() * candidateArtistIds.length)]
+  const artistId = candidateArtistIds[Math.floor(Math.random() * candidateArtistIds.length)]
 
   const topAlbums = await getArtistAlbums(accessToken, artistId)
 
@@ -151,7 +151,6 @@ const artistId = candidateArtistIds[Math.floor(Math.random() * candidateArtistId
 
 
 async function getCandidateArtistsIds(accessToken) {
-
   const longTermArtistsPromise = getTopArtists(accessToken, "long_term")
   const mediumTermArtistsPromise = getTopArtists(accessToken, "medium_term")
   const shortTermArtistsPromise = getTopArtists(accessToken, "short_term")
@@ -166,17 +165,7 @@ async function getCandidateArtistsIds(accessToken) {
   mediumTermArtistIds.forEach(id => candidates.add(id));
   shortTermArtistIds.forEach(id => candidates.add(id));
 
-  // const candidateIds = differenceSet(candidates, shortTermArtistIds)
-  
   return Array.from(candidates);
-}
-
-function differenceSet(setA, setB) {
-  let _difference = new Set(setA)
-  for (let elem of setB) {
-      _difference.delete(elem)
-  }
-  return _difference
 }
 
 async function getTopArtists(accessToken, time_range) {
@@ -198,10 +187,10 @@ async function getArtistAlbums(accessToken, artistId) {
   }
 }
 
-function getSpotifyApi(url, accessToken){
+function getSpotifyApi(url, accessToken) {
   return axios.get("https://api.spotify.com/v1/" + url, {
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    });
+    headers: {
+      Authorization: "Bearer " + accessToken,
+    },
+  });
 }
