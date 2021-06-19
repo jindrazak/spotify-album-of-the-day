@@ -28,5 +28,5 @@ jobs:
                 uses: google-github-actions/deploy-cloudrun@main
                 with:
                     service: ${{ secrets.GCP_APP_NAME }}
-                    image: $IMAGE_NAME
+                    image: ${{ env.$IMAGE_NAME }}
                     region: ${{ secrets.GCP_REGION }}
