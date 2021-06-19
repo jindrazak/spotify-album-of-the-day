@@ -22,7 +22,7 @@ jobs:
             -   name: Authorize Docker push
                 run: gcloud auth configure-docker
             -   name: Build container
-                run: docker build -t $IMAGE_NAME
+                run: docker build -t $IMAGE_NAME .
             -   name: Push Docker image
                 run: docker push $IMAGE_NAME
             -   name: Deploy to Cloud Run
