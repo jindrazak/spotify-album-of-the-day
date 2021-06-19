@@ -1,9 +1,12 @@
-const express = require("express"); // Express web server framework
-const request = require("request"); // "Request" library
-const cors = require("cors");
-const querystring = require("querystring");
-const cookieParser = require("cookie-parser");
-const axios = require("axios");
+import express from "express"
+import request from "request";
+import cors from "cors";
+import path from 'path';
+import {fileURLToPath} from 'url';
+import querystring from "querystring";
+import cookieParser from "cookie-parser";
+
+import axios from "axios";
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -22,6 +25,9 @@ function generateRandomString(length) {
 }
 
 const stateKey = "spotify_auth_state";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
