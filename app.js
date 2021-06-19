@@ -5,10 +5,9 @@ var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 var axios = require("axios");
 
-var client_id = "your-client-id"; // Your client id
-var client_secret = "your-client-secret"; // Your secret
-var redirect_uri = "http://localhost:8080/callback"; // Your redirect uri
-//var redirect_uri = "https://spotify-album-of-the-day-6r4ar544wa-lm.a.run.app/callback"; // Your redirect uri
+var client_id = process.env.SPOTIFY_CLIENT_ID;
+var client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+var redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
 
 var generateRandomString = function (length) {
