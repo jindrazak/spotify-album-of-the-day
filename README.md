@@ -11,6 +11,13 @@ https://spotify-album-of-the-day-6r4ar544wa-lm.a.run.app/
 
 In order to make the communication with Spotify API work, you need to provide these secrets to the Docker container:
 
-* SPOTIFY_CLIENT_ID 
-* SPOTIFY_CLIENT_SECRET
-* SPOTIFY_REDIRECT_URI
+* `SPOTIFY_CLIENT_ID `
+* `SPOTIFY_CLIENT_SECRET`
+* `SPOTIFY_REDIRECT_URI`
+
+# Development
+Simply start the Node.js container using `docker-compose`:
+
+```bash
+docker-compose up
+```
