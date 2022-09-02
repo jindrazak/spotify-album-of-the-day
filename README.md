@@ -1,6 +1,6 @@
 # Spotify Album of the Day
 
-[![Google Cloud Run](https://github.com/jindrazak/spotify-album-of-the-day/actions/workflows/gcp-cloud-run.yaml/badge.svg?branch=gcp-cloud-run)](https://github.com/jindrazak/spotify-album-of-the-day/actions/workflows/gcp-cloud-run.yaml)
+[![Google Cloud Run](https://github.com/jindrazak/spotify-album-of-the-day/actions/workflows/gcp-cloud-run.yaml/badge.svg?branch=master)](https://github.com/jindrazak/spotify-album-of-the-day/actions/workflows/gcp-cloud-run.yaml)
 
 A simple web app that picks a random album based on your previous listening tastes on Spotify. 
 
