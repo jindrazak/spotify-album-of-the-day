@@ -9,9 +9,9 @@ jobs:
             IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APP_NAME }}
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
             -   name: Setup Cloud SDK
-                uses: google-github-actions/setup-gcloud@master
+                uses: google-github-actions/setup-gcloud@v0
                 with:
                     project_id: ${{ env.PROJECT_ID }}
                     service_account_email: ${{ secrets.GCP_EMAIL }}
@@ -25,7 +25,7 @@ jobs:
                 run: docker push $IMAGE_NAME
             -   name: Deploy to Cloud Run
                 id: deploy
-                uses: google-github-actions/deploy-cloudrun@main
+                uses: google-github-actions/deploy-cloudrun@v0
                 with:
                     service: ${{ secrets.GCP_APP_NAME }}
                     image: ${{ env.IMAGE_NAME }}
