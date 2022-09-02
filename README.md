@@ -4,9 +4,6 @@
 
 A simple web app that picks a random album based on your previous listening tastes on Spotify. 
 
-Deploys to Google Cloud Run:
-https://spotify-album-of-the-day-6r4ar544wa-lm.a.run.app/
-
 # Secrets
 
 In order to make the communication with Spotify API work, you need to provide these secrets to the Docker container:
