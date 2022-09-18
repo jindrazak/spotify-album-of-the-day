@@ -123,7 +123,7 @@ function refreshToken(req, res) {
 async function aotd(req, res) {
   const accessToken = req.query["accessToken"];
 
-  const aotd = getAlbumOfTheDay(accessToken)
+  const aotd = await getAlbumOfTheDay(accessToken)
   res.send(aotd);
 }
 
